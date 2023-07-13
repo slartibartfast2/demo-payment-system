@@ -1,0 +1,35 @@
+server.port: 9092
+
+
+spring:
+  application:
+    name: wallet-service
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    show-sql: true
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://127.0.0.1:25432/wallet-service-db
+    username: postgres
+    password: password
+  cache:
+    redis:
+      time-to-live: 300000
+      cache-null-values: false
+  data:
+    redis:
+      port: 26379
+      timeout: 600ms
+      sentinel:
+        master: mymaster
+        nodes: localhost
+  cloud:
+    consul:
+      host: localhost
+      port: 8500
+  config:
+    import: optional:consul:localhost:8500
+  flyway:
+    baseline-on-migrate: true
+
+slartibartfast.openapi.dev-url: http://localhost:9092

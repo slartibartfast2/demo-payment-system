@@ -1,0 +1,37 @@
+version: "3.1"
+
+services:
+  db:
+    image: postgres
+    restart: always
+    ports:
+      - "25432:5432"
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: wallet-service-db
+  redis:
+    image: 'bitnami/redis:latest'
+    environment:
+      - ALLOW_EMPTY_PASSWORD=yes
+    ports:
+      - '6379:6379'
+    networks:
+      - app-tier
+  redis-sentinel:
+    image: 'bitnami/redis-sentinel:latest'
+    environment:
+      - REDIS_MASTER_HOST=localhost
+      - REDIS_SENTINEL_RESOLVE_HOSTNAMES=yes
+    ports:
+      - '26379:26379'
+    networks:
+      - app-tier
+
+volumes:
+  cache:
+    driver: local
+
+networks:
+  app-tier:
+    driver: bridge
