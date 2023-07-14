@@ -4,8 +4,6 @@ import ea.slartibartfast.paymentservice.infrastructure.client.WalletClient;
 import ea.slartibartfast.paymentservice.infrastructure.client.request.TransactionDirection;
 import ea.slartibartfast.paymentservice.infrastructure.client.request.UpdateBalanceRequest;
 import ea.slartibartfast.paymentservice.infrastructure.client.response.BalanceResponse;
-import ea.slartibartfast.paymentservice.infrastructure.client.response.BalanceVo;
-import io.github.resilience4j.circuitbreaker.CallNotPermittedException;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import io.github.resilience4j.retry.annotation.Retry;
 import lombok.RequiredArgsConstructor;
