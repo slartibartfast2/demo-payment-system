@@ -37,8 +37,4 @@ public class WalletService {
 
         return walletClient.update(WALLET_TOKEN, MDC.get(CORRELATION_ID_NAME), updateBalanceRequest);
     }
-
-    public void updateBalanceRetryFallbackValue(String account, int delay, int faultPercent, CallNotPermittedException ex) {
-        log.warn("Creating a fallback balance for account = {}", account);
-    }
 }
