@@ -27,7 +27,7 @@ public class PaymentController {
             @ApiResponse(responseCode = "201", content = {
                     @Content(schema = @Schema(implementation = CreatePaymentResponse.class), mediaType = "application/json") }),
             @ApiResponse(responseCode = "500", content = { @Content(schema = @Schema()) }) })
-    @PostMapping(value = "/payments", consumes = "application/json", produces = "application/json")
+    @PostMapping(value = "/payments/", consumes = "application/json", produces = "application/json")
     public CreatePaymentResponse add(@Valid @RequestBody CreatePaymentRequest createPaymentRequest) {
         return paymentManager.createPayment(createPaymentRequest);
     }

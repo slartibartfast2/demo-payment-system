@@ -14,7 +14,7 @@ public class WalletCustomErrorDecoder implements ErrorDecoder {
             case 400:
                 return new BadRequestException();
             case 404:
-                return new AccountNotFoundException("Product not found");
+                return new AccountNotFoundException("Account not found");
             case 503:
                 return new WalletServiceNotAvailableException("Wallet Api is unavailable");
             default:

@@ -29,7 +29,7 @@ public class PaymentEventService {
     public PaymentEventVo retrieveEvent(String checkoutId) {
         return paymentEventRepository.findPaymentEventByCheckoutId(checkoutId)
                                      .map(this::mapPaymentEventToVo)
-                                     .orElseThrow(() -> new BusinessException("event not found"));
+                                     .orElseThrow(() -> new BusinessException("Payment event not found"));
     }
 
     private List<PaymentOrder> createPaymentOrderListEntity(PaymentEvent paymentEvent, CreatePaymentRequest request) {

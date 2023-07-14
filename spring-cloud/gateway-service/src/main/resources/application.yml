@@ -1,6 +1,5 @@
 server.port: 9090
 
-
 spring:
   application:
     name: gateway-service
@@ -10,30 +9,18 @@ spring:
         locator:
           enabled: true
       routes:
-        - id: account-service
-          uri: lb://account-service
+        - id: payment-service
+          uri: lb://payment-service
           predicates:
-            - Path=/account/**
+            - Path=/v1/payments/**,/v1/payments
           filters:
-            - RewritePath=/account/(?<path>.*), /$\{path}
-        - id: customer-service
-          uri: lb://customer-service
+            - RewritePath=/v1/payments/(?<segment>.*),/api/v1/payments/$\{segment}
+        - id: wallet-service
+          uri: lb://wallet-service
           predicates:
-            - Path=/customer/**
+            - Path=/v1/wallet/**
           filters:
-            - RewritePath=/customer/(?<path>.*), /$\{path}
-        - id: order-service
-          uri: lb://order-service
-          predicates:
-            - Path=/order/**
-          filters:
-            - RewritePath=/order/(?<path>.*), /$\{path}
-        - id: product-service
-          uri: lb://product-service
-          predicates:
-            - Path=/product/**
-          filters:
-            - RewritePath=/product/(?<path>.*), /$\{path}
+            - RewritePath=/v1/wallet/(?<segment>.*),/api/v1/balances/$\{segment}
     consul:
       host: localhost
       port: 8500
