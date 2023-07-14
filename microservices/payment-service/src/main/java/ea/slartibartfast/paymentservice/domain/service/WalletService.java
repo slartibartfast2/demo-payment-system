@@ -26,7 +26,7 @@ public class WalletService {
     private static final String CORRELATION_ID_NAME = "correlation-id";
 
     @Retry(name = "walletService")
-    //@CircuitBreaker(name = "walletService", fallbackMethod = "updateBalanceFallbackValue")
+    @CircuitBreaker(name = "walletService")
     public BalanceResponse updateBalance(String account, BigDecimal amount, String currency) {
         var updateBalanceRequest = UpdateBalanceRequest.builder()
                                                        .direction(TransactionDirection.DEBIT)
@@ -38,11 +38,7 @@ public class WalletService {
         return walletClient.update(WALLET_TOKEN, MDC.get(CORRELATION_ID_NAME), updateBalanceRequest);
     }
 
-    private BalanceResponse updateBalanceFallbackValue(String account, int delay, int faultPercent, CallNotPermittedException ex) {
+    public void updateBalanceRetryFallbackValue(String account, int delay, int faultPercent, CallNotPermittedException ex) {
         log.warn("Creating a fallback balance for account = {}", account);
-
-        var balanceVo = BalanceVo.builder().balanceAmount(BigDecimal.ZERO).build();
-
-        return new BalanceResponse(balanceVo);
     }
 }
