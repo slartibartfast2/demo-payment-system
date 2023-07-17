@@ -21,6 +21,12 @@ spring:
             - Path=/v1/wallet/**
           filters:
             - RewritePath=/v1/wallet/(?<segment>.*),/api/v1/balances/$\{segment}
+        - id: card-service
+          uri: lb://card-service
+          predicates:
+            - Path=/v1/cards/**,/v1/cards
+          filters:
+            - RewritePath=/v1/cards/(?<segment>.*),/api/v1/cards/$\{segment}
     consul:
       host: localhost
       port: 8500

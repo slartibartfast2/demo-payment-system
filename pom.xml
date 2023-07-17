@@ -29,6 +29,7 @@
         <module>microservices/payment-service</module>
         <module>microservices/wallet-service</module>
         <module>spring-cloud/gateway-service</module>
+        <module>microservices/card-service</module>
     </modules>
 
     <dependencyManagement>

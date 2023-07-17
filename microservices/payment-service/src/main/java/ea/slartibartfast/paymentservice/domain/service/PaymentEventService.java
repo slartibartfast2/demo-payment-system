@@ -19,8 +19,8 @@ public class PaymentEventService {
 
     private final PaymentEventRepository paymentEventRepository;
 
-    public PaymentEventVo createEvent(CreatePaymentRequest request) {
-        var paymentEvent = createPaymentEventEntity(request);
+    public PaymentEventVo createEvent(CreatePaymentRequest request, String cardToken) {
+        var paymentEvent = createPaymentEventEntity(request, cardToken);
         paymentEventRepository.save(paymentEvent);
 
         return mapPaymentEventToVo(paymentEvent);
@@ -46,11 +46,11 @@ public class PaymentEventService {
                                                        .build()).toList();
     }
 
-    private PaymentEvent createPaymentEventEntity(CreatePaymentRequest request) {
+    private PaymentEvent createPaymentEventEntity(CreatePaymentRequest request, String cardToken) {
         var paymentEvent = PaymentEvent.builder()
                                        .checkoutId(request.getCheckoutId())
                                        .buyerAccount(request.getBuyerAccount())
-                                       .creditCardToken("token") //TODO
+                                       .creditCardToken(cardToken)
                                        .build();
 
         paymentEvent.setOrders(createPaymentOrderListEntity(paymentEvent, request));

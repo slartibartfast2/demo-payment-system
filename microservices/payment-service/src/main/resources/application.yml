@@ -32,6 +32,19 @@ resilience4j.retry:
         ignore-exceptions:
           - io.github.resilience4j.circuitbreaker.CallNotPermittedException
           - ea.slartibartfast.paymentservice.domain.exception.BusinessException
+      cardService:
+        max-attempts: 3
+        wait-duration: 1s
+        enable-exponential-backoff: true
+        exponential-backoff-multiplier: 1.5
+        exponential-max-wait-duration: 5s
+        retry-exceptions:
+          - org.springframework.web.client.HttpServerErrorException
+          - ea.slartibartfast.paymentservice.infrastructure.exception.CardServiceNotAvailableException
+        ignore-exceptions:
+          - io.github.resilience4j.circuitbreaker.CallNotPermittedException
+          - ea.slartibartfast.paymentservice.infrastructure.exception.CardNotFoundException
+          - ea.slartibartfast.paymentservice.domain.exception.BusinessException
 
 resilience4j:
   circuitbreaker:
