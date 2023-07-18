@@ -4,21 +4,18 @@ server.port: 9093
 spring:
   application:
     name: card-service
-  jpa:
-    database-platform: org.hibernate.dialect.PostgreSQLDialect
-    show-sql: true
-  datasource:
-    driver-class-name: org.postgresql.Driver
-    url: jdbc:postgresql://127.0.0.1:35432/card-service-db
-    username: postgres
-    password: password
   cloud:
     consul:
       host: localhost
       port: 8500
   config:
     import: optional:consul:localhost:8500
+  r2dbc:
+    username: postgres
+    password: password
+    url: r2dbc:postgresql://localhost:35432/card-service-db
   flyway:
+    url: jdbc:postgresql://localhost:35432/card-service-db
     baseline-on-migrate: true
 
 slartibartfast.openapi.dev-url: http://localhost:9093

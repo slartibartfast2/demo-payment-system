@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.HttpMediaTypeNotAcceptableException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.time.Clock;
 
@@ -24,13 +25,13 @@ public class RestExceptionHandler {
         return new ResponseEntity<>(response, HttpStatus.UNPROCESSABLE_ENTITY);
     }
 
-    @ExceptionHandler(HttpMediaTypeNotAcceptableException.class)
-    public ResponseEntity<Response> handleNotAcceptableHttpMediaTypeException(HttpMediaTypeNotAcceptableException ex) {
+    @ExceptionHandler(ResponseStatusException.class)
+    public ResponseEntity<Response> handleResponseStatusException(ResponseStatusException ex) {
         Response response = new Response();
-        response.setErrorMessage(ex.getMessage());
+        response.setErrorMessage(ex.getReason());
         response.setStatus("failure");
         response.setSystemTime(Clock.systemUTC().millis());
-        return new ResponseEntity<>(response, HttpStatus.NOT_ACCEPTABLE);
+        return new ResponseEntity<>(response, ex.getStatusCode());
     }
 
     @ExceptionHandler(Exception.class)

@@ -5,10 +5,11 @@ import org.springframework.security.core.GrantedAuthority;
 
 import java.util.Collection;
 
-public class ApiKeyAuthentication extends AbstractAuthenticationToken {
+public class KeyAuthenticationToken extends AbstractAuthenticationToken {
+
     private final String apiKey;
 
-    public ApiKeyAuthentication(String apiKey, Collection<? extends GrantedAuthority> authorities) {
+    public KeyAuthenticationToken(String apiKey, Collection<? extends GrantedAuthority> authorities) {
         super(authorities);
         this.apiKey = apiKey;
         setAuthenticated(true);

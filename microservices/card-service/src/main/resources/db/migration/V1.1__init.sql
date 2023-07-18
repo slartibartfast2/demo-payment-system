@@ -1,5 +1,4 @@
 drop table if exists cards CASCADE;
-create sequence cards_id_seq increment 3 start 1;
 create table cards
 (
     id                 serial,

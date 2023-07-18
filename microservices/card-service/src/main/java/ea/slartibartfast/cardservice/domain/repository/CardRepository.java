@@ -1,11 +1,10 @@
 package ea.slartibartfast.cardservice.domain.repository;
 
 import ea.slartibartfast.cardservice.domain.model.Card;
-import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.repository.reactive.ReactiveCrudRepository;
+import reactor.core.publisher.Mono;
 
-import java.util.Optional;
+public interface CardRepository extends ReactiveCrudRepository<Card, Long> {
 
-public interface CardRepository extends JpaRepository<Card, Long> {
-
-    Optional<Card> findCardByCardToken(String cardToken);
+    Mono<Card> findCardByCardToken(String cardToken);
 }

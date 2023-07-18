@@ -13,8 +13,8 @@ public class CardEncryptionService {
         var encoded = "";
         try {
             encoded = Base64.getEncoder().encodeToString(cardNumber.getBytes());
-            log.info("Card number encrypted, wait for 1s.");
-            Thread.sleep(1000);
+            log.info("Card number encrypted, wait for 500ms.");
+            Thread.sleep(500);
         } catch (InterruptedException ie) {
             log.warn("interrupted!");
         }
@@ -26,8 +26,8 @@ public class CardEncryptionService {
         try {
             var cardNumberBytes = Base64.getDecoder().decode(encryptedCardNumber);
             cardNumber = new String(cardNumberBytes);
-            log.info("Card number decrypted, wait for 1s.");
-            Thread.sleep(1000);
+            log.info("Card number decrypted, wait for 500ms.");
+            Thread.sleep(500);
         } catch (InterruptedException ie) {
             log.warn("interrupted!");
         }

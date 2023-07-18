@@ -1,14 +1,15 @@
 package ea.slartibartfast.cardservice.domain.model;
 
-import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.relational.core.mapping.Column;
+import org.springframework.data.relational.core.mapping.Table;
 
 import java.time.LocalDateTime;
 
-@Entity
 @Table(name = "cards")
 @Data
 @NoArgsConstructor
@@ -17,20 +18,18 @@ import java.time.LocalDateTime;
 public class Card {
 
     @Id
-    @GeneratedValue(generator = "idSeqGen")
-    @SequenceGenerator(name = "idSeqGen", sequenceName = "cards_id_seq", allocationSize = 3)
-    @Column(name = "id", nullable = false)
+    @Column(value = "id")
     private Long paymentEventId;
 
-    @Column(name = "created_at", nullable = false)
+    @Column(value = "created_at")
     private LocalDateTime createdAt;
 
-    @Column(name = "card_number", nullable = false)
+    @Column(value = "card_number")
     private String cardNumber;
 
-    @Column(name = "card_holder_name", nullable = false)
+    @Column(value = "card_holder_name")
     private String cardHolderName;
 
-    @Column(name = "card_token", nullable = false)
+    @Column(value = "card_token")
     private String cardToken;
 }

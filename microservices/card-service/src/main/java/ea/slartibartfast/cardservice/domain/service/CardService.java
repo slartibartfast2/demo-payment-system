@@ -1,6 +1,5 @@
 package ea.slartibartfast.cardservice.domain.service;
 
-import ea.slartibartfast.cardservice.domain.exception.BusinessException;
 import ea.slartibartfast.cardservice.domain.model.Card;
 import ea.slartibartfast.cardservice.domain.model.vo.CardVo;
 import ea.slartibartfast.cardservice.domain.repository.CardRepository;
@@ -8,9 +7,13 @@ import ea.slartibartfast.cardservice.infrastructure.rest.controller.request.Crea
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
+import reactor.core.publisher.Mono;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
+
+import static org.springframework.http.HttpStatus.NOT_FOUND;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -20,18 +23,17 @@ public class CardService {
     private final CardRepository cardRepository;
     private final CardEncryptionService cardEncryptionService;
 
-    public CardVo retrieveCard(String cardToken) {
+    public Mono<CardVo> retrieveCard(String cardToken) {
         return cardRepository.findCardByCardToken(cardToken)
                              .map(this::mapCardToVo)
-                             .orElseThrow(() -> new BusinessException("Card not found!"));
+                             .doOnNext(card -> log.info("Card retrieved from DB and converted to VO"))
+                             .switchIfEmpty(Mono.error(new ResponseStatusException(NOT_FOUND,
+                                                                            "Card with token: " + cardToken + " not found")));
     }
 
-    public String createCard(CreateCardRequest request) {
+    public Mono<String> createCard(CreateCardRequest request) {
         var card = createCardEntity(request);
-        log.info("Card entity created");
-        cardRepository.save(card);
-        log.info("Card saved into DB");
-        return card.getCardToken();
+        return cardRepository.save(card).map(Card::getCardToken);
     }
 
     private Card createCardEntity(CreateCardRequest request) {
@@ -46,11 +48,11 @@ public class CardService {
     }
 
     private CardVo mapCardToVo(Card card) {
-        var cardVo = CardVo.builder()
-                     .cardHolderName(card.getCardHolderName())
-                     .cardToken(card.getCardToken())
-                     .cardNumber(cardEncryptionService.decrypt(card.getCardNumber()))
-                     .build();
+        CardVo cardVo = CardVo.builder()
+                              .cardHolderName(card.getCardHolderName())
+                              .cardToken(card.getCardToken())
+                              .cardNumber(cardEncryptionService.decrypt(card.getCardNumber()))
+                              .build();
         log.info("Card entity converted to VO");
         return cardVo;
     }

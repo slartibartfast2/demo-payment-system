@@ -6,6 +6,7 @@ import ea.slartibartfast.cardservice.infrastructure.rest.controller.response.Cre
 import ea.slartibartfast.cardservice.infrastructure.rest.controller.response.RetrieveCardResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import reactor.core.publisher.Mono;
 
 @RequiredArgsConstructor
 @Service
@@ -13,13 +14,11 @@ public class CardManager {
 
     private final CardService cardService;
 
-    public RetrieveCardResponse retrieveCard(String cardToken) {
-        var cardVo = cardService.retrieveCard(cardToken);
-        return new RetrieveCardResponse(cardVo);
+    public Mono<RetrieveCardResponse> retrieveCard(String cardToken) {
+        return cardService.retrieveCard(cardToken).map(RetrieveCardResponse::new);
     }
 
-    public CreateCardResponse createCard(CreateCardRequest request) {
-        var cardToken = cardService.createCard(request);
-        return new CreateCardResponse(cardToken);
+    public Mono<CreateCardResponse> createCard(CreateCardRequest request) {
+        return cardService.createCard(request).map(CreateCardResponse::new);
     }
 }
