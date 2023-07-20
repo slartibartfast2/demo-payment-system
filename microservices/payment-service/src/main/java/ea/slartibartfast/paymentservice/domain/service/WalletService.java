@@ -1,9 +1,8 @@
 package ea.slartibartfast.paymentservice.domain.service;
 
-import ea.slartibartfast.paymentservice.infrastructure.client.WalletClient;
-import ea.slartibartfast.paymentservice.infrastructure.client.request.TransactionDirection;
-import ea.slartibartfast.paymentservice.infrastructure.client.request.UpdateBalanceRequest;
-import ea.slartibartfast.paymentservice.infrastructure.client.response.BalanceResponse;
+import ea.slartibartfast.paymentservice.application.model.BalanceUpdateMessage;
+import ea.slartibartfast.paymentservice.application.model.TransactionDirection;
+import ea.slartibartfast.paymentservice.infrastructure.kafka.producer.WalletProducer;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import io.github.resilience4j.retry.annotation.Retry;
 import lombok.RequiredArgsConstructor;
@@ -18,21 +17,24 @@ import java.math.BigDecimal;
 @Service
 public class WalletService {
 
-    private final WalletClient walletClient;
+    private final WalletProducer walletProducer;
 
-    private static final String WALLET_TOKEN = "wallet-token";
     private static final String CORRELATION_ID_NAME = "correlation-id";
 
     @Retry(name = "walletService")
     @CircuitBreaker(name = "walletService")
-    public BalanceResponse updateBalance(String account, BigDecimal amount, String currency) {
-        var updateBalanceRequest = UpdateBalanceRequest.builder()
+    public void updateBalance(String account, BigDecimal amount, String currency) {
+        var requestUUID = MDC.get(CORRELATION_ID_NAME);
+        var updateBalanceRequest = BalanceUpdateMessage.builder()
+                                                       .requestUUID(requestUUID)
                                                        .direction(TransactionDirection.DEBIT)
                                                        .transactionAmount(amount)
                                                        .currency(currency)
                                                        .account(account)
                                                        .build();
 
-        return walletClient.update(WALLET_TOKEN, MDC.get(CORRELATION_ID_NAME), updateBalanceRequest);
+        walletProducer.sendBalanceUpdate(requestUUID, updateBalanceRequest);
+
+        log.info("New balance message sent to MQ for account {}", account);
     }
 }

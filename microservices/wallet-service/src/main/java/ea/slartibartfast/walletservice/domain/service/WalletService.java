@@ -1,12 +1,12 @@
 package ea.slartibartfast.walletservice.domain.service;
 
+import ea.slartibartfast.walletservice.application.model.BalanceUpdateMessage;
 import ea.slartibartfast.walletservice.domain.exception.BalanceLockException;
 import ea.slartibartfast.walletservice.domain.exception.BusinessException;
 import ea.slartibartfast.walletservice.domain.model.Balance;
 import ea.slartibartfast.walletservice.domain.model.vo.BalanceVo;
 import ea.slartibartfast.walletservice.domain.repository.BalanceRepository;
 import ea.slartibartfast.walletservice.infrastructure.rest.controller.request.InitBalanceRequest;
-import ea.slartibartfast.walletservice.infrastructure.rest.controller.request.UpdateBalanceRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.integration.support.locks.LockRegistry;
@@ -18,7 +18,7 @@ import java.time.LocalDateTime;
 @Slf4j
 @RequiredArgsConstructor
 @Service
-public class BalanceService {
+public class WalletService {
 
     private final BalanceRepository balanceRepository;
     private final BalanceUpdateService balanceUpdateService;
@@ -34,18 +34,19 @@ public class BalanceService {
                                 .orElseThrow(() -> new BusinessException("balance not found for this account"));
     }
 
-    public BalanceVo updateBalance(UpdateBalanceRequest updateBalanceRequest) {
-        var lock = lockRegistry.obtain(BALANCE_LOCK_KEY_PREFIX + updateBalanceRequest.getAccount());
-        var acquired = lock.tryLock();
-        if (!acquired) {
-            throw new BalanceLockException("cannot lock balance for this account!");
+    public void updateBalance(BalanceUpdateMessage balanceUpdateMessage) {
+        var lock = lockRegistry.obtain(BALANCE_LOCK_KEY_PREFIX + balanceUpdateMessage.getAccount());
+        try {
+            var acquired = lock.tryLock();
+            if (!acquired) {
+                throw new BalanceLockException("cannot lock balance for this account!");
+            }
+
+            var balance = balanceUpdateService.updateBalance(balanceUpdateMessage);
+            log.info("Balance updated for account {}, new balance is {}", balance.getAccount(), balance.getBalance());
+        } finally {
+            lock.unlock();
         }
-
-        var balance = balanceUpdateService.updateBalance(updateBalanceRequest);
-
-        lock.unlock();
-
-        return mapBalanceToVo(balance);
     }
 
     public BalanceVo initBalance(InitBalanceRequest initBalanceRequest) {

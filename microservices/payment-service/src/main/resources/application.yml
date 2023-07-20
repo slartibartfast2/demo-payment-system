@@ -1,8 +1,28 @@
 server.port: 9091
+app:
+  kafka:
+    wallet:
+      topic:
+        default-name: wallet.balance-update
+        retention: 7d
+    card:
+      topic:
+        default-name: card.create
+        retention: 7d
+    deadletter:
+      retention: 28d
+      suffix: .DLT
+    backoff:
+      initial-interval: 500ms
+      max-interval: 2s
+      max-retries: 5
+      multiplier: 1.5
 
 spring:
   application:
     name: payment-service
+  kafka:
+    bootstrap-servers: localhost:19092
   datasource:
     driver-class-name: org.postgresql.Driver
     url: jdbc:postgresql://127.0.0.1:15432/payment-service-db

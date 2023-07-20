@@ -7,6 +7,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.util.UUID;
+
 @Slf4j
 @RequiredArgsConstructor
 @Service
@@ -26,14 +28,9 @@ public class PaymentFacadeService {
         pspService.callPSP(paymentEventVo);
 
         paymentEventVo.getOrders()
-                      .forEach(paymentOrder -> {
-                          var response = walletService.updateBalance(paymentOrder.getSellerAccount(),
-                                                                     paymentOrder.getAmount(),
-                                                                     paymentOrder.getCurrency());
-                          log.info("New balance for {} is {}",
-                                   paymentOrder.getSellerAccount(),
-                                   response.balanceVo().getBalanceAmount());
-                      });
+                      .forEach(paymentOrder -> walletService.updateBalance(paymentOrder.getSellerAccount(),
+                                                                           paymentOrder.getAmount(),
+                                                                           paymentOrder.getCurrency()));
 
         log.info("Seller balances updated for payment orders");
         //TODO:: updateLedger
@@ -43,8 +40,8 @@ public class PaymentFacadeService {
 
     private String cardStrategy(CreditCardInfo cardInfo) {
         if (cardInfo.getCardToken() == null && cardInfo.isSaveAsNewCard()) {
-            var createCardResponse = cardService.createCard(cardInfo.getCardHolderName(), cardInfo.getCardNumber());
-            return createCardResponse.cardToken();
+            cardService.createCard(cardInfo.getCardHolderName(), cardInfo.getCardNumber());
+            return null;
         }
 
         return cardInfo.getCardToken();

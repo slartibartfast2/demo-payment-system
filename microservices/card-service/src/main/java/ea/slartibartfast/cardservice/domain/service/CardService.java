@@ -1,10 +1,10 @@
 package ea.slartibartfast.cardservice.domain.service;
 
+import ea.slartibartfast.cardservice.application.model.CreateCardMessage;
 import ea.slartibartfast.cardservice.domain.exception.BusinessException;
 import ea.slartibartfast.cardservice.domain.model.Card;
 import ea.slartibartfast.cardservice.domain.model.vo.CardVo;
 import ea.slartibartfast.cardservice.domain.repository.CardRepository;
-import ea.slartibartfast.cardservice.infrastructure.rest.controller.request.CreateCardRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -26,20 +26,19 @@ public class CardService {
                              .orElseThrow(() -> new BusinessException("Card not found!"));
     }
 
-    public String createCard(CreateCardRequest request) {
-        var card = createCardEntity(request);
+    public void createCard(CreateCardMessage createCardMessage) {
+        var card = createCardEntity(createCardMessage);
         log.info("Card entity created");
         cardRepository.save(card);
         log.info("Card saved into DB");
-        return card.getCardToken();
     }
 
-    private Card createCardEntity(CreateCardRequest request) {
-        var cardToken = UUID.nameUUIDFromBytes(request.getCardNumber().getBytes()).toString();
+    private Card createCardEntity(CreateCardMessage createCardMessage) {
+        var cardToken = UUID.nameUUIDFromBytes(createCardMessage.getCardNumber().getBytes()).toString();
         log.info("New card token generated for card, {}", cardToken);
         return Card.builder()
-                   .cardNumber(cardEncryptionService.encrypt(request.getCardNumber()))
-                   .cardHolderName(request.getCardHolderName())
+                   .cardNumber(cardEncryptionService.encrypt(createCardMessage.getCardNumber()))
+                   .cardHolderName(createCardMessage.getCardHolderName())
                    .createdAt(LocalDateTime.now())
                    .cardToken(cardToken)
                    .build();

@@ -17,5 +17,6 @@
     </root>
 
     <logger name="ea.slartibartfast" level="INFO"/>
+    <logger name="org.apache.kafka" level="INFO"/>
     <logger name="org.springframework" level="INFO"/>
 </configuration>

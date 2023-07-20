@@ -11,6 +11,7 @@ import ea.slartibartfast.paymentservice.infrastructure.rest.controller.request.C
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -48,6 +49,7 @@ public class PaymentEventService {
 
     private PaymentEvent createPaymentEventEntity(CreatePaymentRequest request, String cardToken) {
         var paymentEvent = PaymentEvent.builder()
+                                       .createdAt(LocalDateTime.now())
                                        .checkoutId(request.getCheckoutId())
                                        .buyerAccount(request.getBuyerAccount())
                                        .creditCardToken(cardToken)

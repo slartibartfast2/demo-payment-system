@@ -2,7 +2,6 @@ package ea.slartibartfast.walletservice.infrastructure.rest.controller;
 
 import ea.slartibartfast.walletservice.domain.manage.BalanceManager;
 import ea.slartibartfast.walletservice.infrastructure.rest.controller.request.InitBalanceRequest;
-import ea.slartibartfast.walletservice.infrastructure.rest.controller.request.UpdateBalanceRequest;
 import ea.slartibartfast.walletservice.infrastructure.rest.controller.response.BalanceResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -30,16 +29,6 @@ public class BalanceController {
     @PostMapping(value = "/balances/init", consumes = "application/json", produces = "application/json")
     public BalanceResponse init(@Valid @RequestBody InitBalanceRequest initBalanceRequest) {
         return balanceManager.initBalance(initBalanceRequest);
-    }
-
-    @Operation(summary = "Update account balance", tags = { "balance", "patch" })
-    @ApiResponses({
-            @ApiResponse(responseCode = "201", content = {
-                    @Content(schema = @Schema(implementation = BalanceResponse.class), mediaType = "application/json") }),
-            @ApiResponse(responseCode = "500", content = { @Content(schema = @Schema()) }) })
-    @PostMapping(value = "/balances", consumes = "application/json", produces = "application/json")
-    public BalanceResponse update(@Valid @RequestBody UpdateBalanceRequest updateBalanceRequest) {
-        return balanceManager.updateBalance(updateBalanceRequest);
     }
 
     @Operation(

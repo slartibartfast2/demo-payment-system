@@ -1,9 +1,27 @@
 server.port: 9092
+app:
+  kafka:
+    topic:
+      default-name: wallet.balance-update
+      retention: 7d
+    deadletter:
+      retention: 28d
+      suffix: .DLT
+    backoff:
+      initial-interval: 500ms
+      max-interval: 2s
+      max-retries: 5
+      multiplier: 1.5
 
 
 spring:
   application:
     name: wallet-service
+  kafka:
+    bootstrap-servers: localhost:19092
+    consumer:
+      group-id: wallet-trx
+      auto-offset-reset: latest
   jpa:
     database-platform: org.hibernate.dialect.PostgreSQLDialect
     show-sql: true

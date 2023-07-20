@@ -1,8 +1,7 @@
 package ea.slartibartfast.walletservice.domain.manage;
 
-import ea.slartibartfast.walletservice.domain.service.BalanceService;
+import ea.slartibartfast.walletservice.domain.service.WalletService;
 import ea.slartibartfast.walletservice.infrastructure.rest.controller.request.InitBalanceRequest;
-import ea.slartibartfast.walletservice.infrastructure.rest.controller.request.UpdateBalanceRequest;
 import ea.slartibartfast.walletservice.infrastructure.rest.controller.response.BalanceResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -11,15 +10,10 @@ import org.springframework.stereotype.Service;
 @Service
 public class BalanceManager {
 
-    private final BalanceService balanceService;
+    private final WalletService balanceService;
 
     public BalanceResponse initBalance(InitBalanceRequest initBalanceRequest) {
         var balanceVo = balanceService.initBalance(initBalanceRequest);
-        return new BalanceResponse(balanceVo);
-    }
-
-    public BalanceResponse updateBalance(UpdateBalanceRequest updateBalanceRequest) {
-        var balanceVo = balanceService.updateBalance(updateBalanceRequest);
         return new BalanceResponse(balanceVo);
     }
 
