@@ -8,7 +8,7 @@ create table payment_events
     created_at         timestamp without time zone default CURRENT_TIMESTAMP,
     checkout_id        varchar(255) unique,
     buyer_account      varchar(1000) not null,
-    credit_card_token  varchar(255) not null,
+    credit_card_token  varchar(255),
     payment_completed  boolean default false,
     primary key (id)
 );
