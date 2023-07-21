@@ -11,6 +11,7 @@ import org.slf4j.MDC;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.util.UUID;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -21,10 +22,9 @@ public class WalletService {
 
     private static final String CORRELATION_ID_NAME = "correlation-id";
 
-    @Retry(name = "walletService")
-    @CircuitBreaker(name = "walletService")
     public void updateBalance(String account, BigDecimal amount, String currency) {
         var requestUUID = MDC.get(CORRELATION_ID_NAME);
+        var messageUUID = UUID.nameUUIDFromBytes(account.getBytes()).toString();
         var updateBalanceRequest = BalanceUpdateMessage.builder()
                                                        .requestUUID(requestUUID)
                                                        .direction(TransactionDirection.DEBIT)
@@ -33,7 +33,7 @@ public class WalletService {
                                                        .account(account)
                                                        .build();
 
-        walletProducer.sendBalanceUpdate(requestUUID, updateBalanceRequest);
+        walletProducer.sendBalanceUpdate(messageUUID, updateBalanceRequest);
 
         log.info("New balance message sent to MQ for account {}", account);
     }

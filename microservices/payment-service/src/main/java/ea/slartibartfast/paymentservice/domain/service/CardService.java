@@ -2,7 +2,6 @@ package ea.slartibartfast.paymentservice.domain.service;
 
 import ea.slartibartfast.paymentservice.application.model.CreateCardMessage;
 import ea.slartibartfast.paymentservice.infrastructure.kafka.producer.CardProducer;
-import io.github.resilience4j.retry.annotation.Retry;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.MDC;
@@ -17,7 +16,6 @@ public class CardService {
 
     private static final String CORRELATION_ID_NAME = "correlation-id";
 
-    @Retry(name = "cardService")
     public void createCard(String cardHolderName, String cardNumber) {
         var requestUUID = MDC.get(CORRELATION_ID_NAME);
         var createCardMessage = CreateCardMessage.builder()

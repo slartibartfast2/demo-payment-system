@@ -14,7 +14,7 @@ public class KafkaTopicConfig {
     private String topicName;
 
     @Bean
-    public NewTopic userTransactionTopic() {
+    public NewTopic walletTopic() {
         return TopicBuilder.name(topicName)
                 .partitions(4)
                 .replicas(2)
